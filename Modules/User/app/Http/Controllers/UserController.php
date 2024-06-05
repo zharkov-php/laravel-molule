@@ -4,7 +4,8 @@ namespace Modules\User\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Collection;
-use Modules\User\Entities\User;
+use Modules\User\Models\User;
+
 
 class UserController extends Controller
 {

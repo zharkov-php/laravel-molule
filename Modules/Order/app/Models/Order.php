@@ -1,10 +1,13 @@
 <?php
 
-namespace Modules\Order\Models;
+namespace Modules\Order\app\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\Order\Database\Factories\OrderFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Order\Database\factories\OrderFactory;
+use Modules\Product\app\Models\Product;
+use Modules\User\app\Models\User;
 
 class Order extends Model
 {
@@ -13,10 +16,24 @@ class Order extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'user_id',
+        'product_id',
+        'quantity',
+        'total_price',
+    ];
 
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class);
+    }
     protected static function newFactory(): OrderFactory
     {
-        //return OrderFactory::new();
+        return OrderFactory::new();
     }
 }
