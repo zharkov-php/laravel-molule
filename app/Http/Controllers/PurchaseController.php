@@ -2,30 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PurchaseRequest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Modules\Order\app\Models\Order;
-use Modules\Product\app\Models\Product;
+use Modules\Order\app\Http\Services\OrderService;
 
 class PurchaseController extends Controller
 {
-    public function purchase(Request $request): JsonResponse
+    protected OrderService $orderService;
+
+    public function __construct(OrderService $orderService)
     {
-        $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer|min:1',
-        ]);
+        $this->orderService = $orderService;
+    }
 
-        $product = Product::findOrFail($request->product_id);
-        $totalPrice = $product->price * $request->quantity;
-
-        $order = Order::create([
-            'user_id' => auth()->id(),
-            'product_id' => $product->id,
-            'quantity' => $request->quantity,
-            'total_price' => $totalPrice,
-            'status' => 'pending',
-        ]);
+    public function purchase(PurchaseRequest $request): JsonResponse
+    {
+        $order = $this->orderService->createOrder(
+            $request->product_id,
+            $request->quantity,
+            auth()->id()
+        );
 
         return response()->json($order, 200);
     }
