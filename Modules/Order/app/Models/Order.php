@@ -21,6 +21,7 @@ class Order extends Model
         'product_id',
         'quantity',
         'total_price',
+        'status',
     ];
 
     public function user(): BelongsTo
@@ -35,5 +36,10 @@ class Order extends Model
     protected static function newFactory(): OrderFactory
     {
         return OrderFactory::new();
+    }
+
+    public function setTotalPriceAttribute($value): void
+    {
+        $this->attributes['total_price'] = $this->product->price * $this->attributes['quantity'];
     }
 }
